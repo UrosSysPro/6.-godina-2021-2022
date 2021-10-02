@@ -4,8 +4,8 @@ class Block{
     constructor(x,y,w,h,world){
         var fixDef = new b2FixtureDef();
         fixDef.density = 1.0;
-        fixDef.friction = 0.5;
-        fixDef.restitution = 0.2;
+        fixDef.friction = 0.2;
+        fixDef.restitution = 0.7;
         fixDef.shape = new b2PolygonShape();
         fixDef.shape.SetAsBox(w/scale, h/scale);
         this.w=w;
@@ -15,6 +15,7 @@ class Block{
         bodyDef.type = b2Body.b2_dynamicBody;
         bodyDef.position.x = x/scale;
         bodyDef.position.y = y/scale;
+        bodyDef.linearDamping=0;
 
         this.body=world.CreateBody(bodyDef);
         this.fixture=this.body.CreateFixture(fixDef);

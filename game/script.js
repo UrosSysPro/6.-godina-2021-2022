@@ -16,6 +16,7 @@ let blokovi;
 let world;
 let w;
 let h;
+let  player;
 
 function load(){
     canvas=document.getElementsByTagName("canvas")[0];
@@ -25,13 +26,20 @@ function load(){
     canvas.height=h;
     context=canvas.getContext("2d");
     canvas.addEventListener("click",click);
+    document.body.addEventListener("keydown",keydown);
+    document.body.addEventListener("keyup",keyup);
 
-    world=new b2World(new b2Vec2(0,10),false);
+    world=new b2World(new b2Vec2(0,0),false);
 
     blokovi=[];
     blokovi.push(new Block(w/2,h-10,w/2,10,world));
-    blokovi[0].body.SetType(b2Body.b2_staticBody);
-    
+    blokovi.push(new Block(w/2,10,w/2,10,world));
+    blokovi.push(new Block(10,h/2,10,h/2,world));
+    blokovi.push(new Block(w-10,h/2,10,h/2,world));
+    for(let i=0;i<blokovi.length;i++){
+        blokovi[i].body.SetType(b2Body.b2_staticBody);
+    }
+    player=new Player(w/2,h/2,10,10,world);
     loop();
 }
 
@@ -48,9 +56,25 @@ function draw(){
     for(let i=0;i<blokovi.length;i++){
         blokovi[i].draw(context);
     }
+    player.draw(context);
 }
 
 function click(event){
     console.log(event.x+" "+event.y);
     blokovi.push(new Block(event.x,event.y,20,20,world));
+    blokovi[blokovi.length-1].body.SetLinearVelocity(new b2Vec2(30,30));
+}
+
+function keydown(event){
+    // console.log(event);
+    if(event.key=="w"){
+        player.keyUp=true;
+    }
+}
+
+function keyup(event){
+    // console.log(event);
+    if(event.key=="w"){
+        player.keyUp=true;
+    }
 }

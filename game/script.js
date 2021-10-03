@@ -21,6 +21,7 @@ let  player;
 let mx;
 let my;
 let isMouseDown;
+let frameCounter;
 function load(){
     canvas=document.getElementsByTagName("canvas")[0];
     w=500;
@@ -46,7 +47,8 @@ function load(){
         blokovi[i].body.SetType(b2Body.b2_staticBody);
     }
     bullets=[];
-    player=new Player(w/2,h/2,10,10,world);
+    player=new Player(w/2,h/2,20,20,world);
+    frameCounter=0;
     loop();
 }
 
@@ -56,6 +58,7 @@ function loop(){
     draw();
 }
 function update(){
+    frameCounter=(frameCounter+1)%60;
     player.update();
     if(isMouseDown){
         let x=player.getX();
@@ -65,7 +68,7 @@ function update(){
 
         bullets.push(new Bullet(x,y,vx,vy,world));
     }
-    if(bullets.length>10){
+    if(bullets.length>200){
         world.DestroyBody(bullets[0].body);
         bullets.shift();
     }

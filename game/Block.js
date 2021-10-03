@@ -32,6 +32,8 @@ class Block{
     draw(context){
         let x=this.getX();
         let y=this.getY();
+        x=parseInt(x);
+        y=parseInt(y);
         let a=this.getA();
         context.translate(x,y);
         context.rotate(a);

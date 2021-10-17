@@ -19,6 +19,7 @@ class Block{
 
         this.body=world.CreateBody(bodyDef);
         this.fixture=this.body.CreateFixture(fixDef);
+        this.fixture.SetUserData(this);
     }
     getX(){
         return this.body.GetPosition().x*scale;

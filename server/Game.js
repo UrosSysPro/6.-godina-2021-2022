@@ -40,8 +40,20 @@ class Game{
             this.players[i].ws.send(toSend);
         }
     }
-    onmessage(ws,message){
-
+    onmessage(index,message){
+        let p=JSON.parse(message.data);
+        if(p.type=="keyPressed"){
+            if(p.key=="w")this.players[index].keyUp=true;
+            if(p.key=="s")this.players[index].keyDown=true;
+            if(p.key=="a")this.players[index].keyLeft=true;
+            if(p.key=="d")this.players[index].keyRight=true;
+        }
+        if(p.type=="keyReleased"){
+            if(p.key=="w")this.players[index].keyUp=false;
+            if(p.key=="s")this.players[index].keyDown=false;
+            if(p.key=="a")this.players[index].keyLeft=false;
+            if(p.key=="d")this.players[index].keyRight=false;
+        }
     }
 }
 

@@ -19,6 +19,8 @@ function load(){
     canvas.width=w;
     canvas.height=h;
 
+    document.body.addEventListener("keydown",keyDown);
+    document.body.addEventListener("keyup",keyUp);
     
 
     ws.onmessage=function(message){
@@ -42,4 +44,20 @@ function load(){
         console.log("error");
     }
     
+}
+
+function keyDown(event){
+    console.log(event.key);
+    let toSend={
+        type:"keyPressed",
+        key:event.key
+    }
+    ws.send(JSON.stringify(toSend));
+}
+function keyUp(event){
+    let toSend={
+        type:"keyReleased",
+        key:event.key
+    }
+    ws.send(JSON.stringify(toSend));
 }

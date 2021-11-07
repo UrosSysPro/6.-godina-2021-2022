@@ -22,6 +22,9 @@ server.on("connection",function(ws){
         connections.splice(index,1);
         game.removePlayer(index);
     };
+    ws.onmessage=function(message){
+        game.onmessage(connections.indexOf(ws),message);
+    }
 });
 
 let interval=setInterval(function() {

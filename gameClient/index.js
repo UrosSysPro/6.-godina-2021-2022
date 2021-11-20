@@ -12,7 +12,7 @@ function load(){
     w=window.innerWidth;
     h=window.innerHeight;
 
-    ws=new WebSocket("ws://localhost:5000");
+    ws=new WebSocket("ws://192.168.0.192:5000");
     canvas=document.getElementsByTagName("canvas")[0];
     context=canvas.getContext("2d");
 
@@ -24,7 +24,7 @@ function load(){
     
 
     ws.onmessage=function(message){
-        context.clearRect(0,0,500,500);
+        context.clearRect(0,0,w,h);
         let sent=JSON.parse(message.data);
         for(let i=0;i<sent.locations.length;i++){
             context.translate(sent.locations[i].x,sent.locations[i].y);

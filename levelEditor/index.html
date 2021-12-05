@@ -8,16 +8,16 @@
 <body onload="load()">
     <div id="side-bar">
         <div id="inputs">
-            <input class="editInput" style="grid-area: i1" id="x" type="number">
-            <input class="editInput" style="grid-area: i2" id="y" type="number">
-            <input class="editInput" style="grid-area: i3" id="w" type="number">
-            <input class="editInput" style="grid-area: i4" id="h" type="number">
-            <input type="range" style="grid-area: r1" class="randgeInput">
-            <input type="range" style="grid-area: r2" class="randgeInput">
+            <input class="editInput" step="5" style="grid-area: i1" id="x" type="number">
+            <input class="editInput" step="5" style="grid-area: i2" id="y" type="number">
+            <input class="editInput" step="5" style="grid-area: i3" id="w" type="number">
+            <input class="editInput" step="5" style="grid-area: i4" id="h" type="number">
+            <input type="range"  min="0" max="360" style="grid-area: r1" class="rangeInput">
+            <input type="range" style="grid-area: r2" class="rangeInput">
             <button onclick="addItem()" id="newElementBtn">New Element</button>
         </div>
         <div id="items">
-            <div class="item">item0</div>
+           
         </div>
     </div>
     <div id="main">

@@ -6,6 +6,8 @@ let mapX;
 let mapY;
 let isMouseDown;
 let selectedItemToEdit;
+let editInputs;
+let rangeInputs;
 
 let itemsDiv;
 let map;
@@ -14,8 +16,16 @@ function load(){
     mapDiv=document.getElementById("map");
     mainDiv=document.getElementById("main");
     itemsDiv=document.getElementById("items");
+
+    editInputs=document.getElementsByClassName("editInput");
+    for(let i=0;i<editInputs.length;i++){
+        editInputs[i].addEventListener("input",changeItem);
+    }
+    rangeInputs=document.getElementsByClassName("rangeInput");
+    rangeInputs[0].addEventListener("input",changeItem);
+
     isMouseDown=false;
-    map=new GameMap(mapDiv,itemsDiv);
+    map=new GameMap(mapDiv,itemsDiv,editInputs,rangeInputs);
     
     mainDiv.addEventListener("mousedown",function(e){
         console.log("main");
@@ -36,6 +46,11 @@ function load(){
 }
 
 function addItem(){
-    map.addItem(200,200,100,20);
+    map.addItem(200,200,100,20,45);
+}
 
+
+function changeItem(){
+    console.log("change ");
+    map.changeItem();
 }

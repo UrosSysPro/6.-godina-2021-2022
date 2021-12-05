@@ -1,0 +1,71 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    height: 100vh;
+    display: flex;
+}
+
+#side-bar{
+    height: 100%;
+    background: rgb(47, 1, 133);
+    width: 300px;
+}
+
+#main{
+    height: 100%;
+    background: rgb(68, 2, 189);
+    flex-grow: 1;
+    /* width:calc(100vh ); */
+    position: relative;
+    overflow: hidden;
+}
+#map{
+    pointer-events: none;
+    position: absolute;
+    width: 800px;
+    height: 600px;
+    background: white;
+    top: 50px;
+    left: 50px;
+}
+#inputs{
+    height: 50%;
+    width: 100%;
+    display: grid;
+    grid-template-areas: 
+    "i1 i2" 
+    "i3 i4"
+    "r1 r1" 
+    "r2 r2"
+    "newElement newElement";
+    padding: 50px;
+}
+.editInput{
+    width: 100%;
+    height: 40px;
+    /* background: black; */
+    display: block;
+    border: 2px solid gainsboro;
+    border-radius: 5px;
+    padding: 5px;
+     /* margin: 5px; */
+}
+.rangeInput{
+    width: 100%;
+    display: block;
+}
+#newElementBtn{
+    grid-area: newElement
+}
+.itemBox{
+    position: absolute;
+    border: 3px solid orange;
+}
+.item{
+    padding: 3px 5px;
+    text-align: right;
+    
+}

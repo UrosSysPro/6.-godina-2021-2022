@@ -19,10 +19,26 @@ class Game{
     }
     addPlayer(x,y,w,h,ws){
         this.players.push(new Player(x,y,w,h,this.world,ws));
+        let toSend={
+            type:"init",
+            players:[],
+            walls:[],
+            myId:this.players.length-1
+        };
+        for(let i=0;i<this.players.length;i++){
+            toSend.players.push({
+                x:this.players[i].getX(),
+                y:this.players[i].getY()
+            });
+        }
+        ws.send(JSON.stringify(toSend));
+        //obavestimo sve igrace da je ubacen igrac
+
     }
     removePlayer(index){
         this.world.DestroyBody(this.players[index].body);
         this.players.splice(index,1);
+        //obavestiti sve da je izbrisan player
     }
     send(){
         let toSend={
@@ -32,14 +48,33 @@ class Game{
             toSend.locations.push({
                 x:this.players[i].getX(),
                 y:this.players[i].getY(),
-                a:this.players[i].getA()
+                a:this.players[i].getA(),
+                lookingAt:this.players[i].lookingAt
             });
         }
-        toSend=JSON.stringify(toSend);
         for(let i=0;i<this.players.length;i++){
-            this.players[i].ws.send(toSend);
+            toSend.locations[i].me=true;
+            this.players[i].ws.send(JSON.stringify(toSend));
+            toSend.locations[i].me=false;
         }
     }
+    // send(){
+    //     let toSend={
+    //         type:"updateLocations",
+    //         playerLocations:[],
+    //         bulletLocations:[]
+    //     }   
+    //     for(let i=0;i<this.players.length;i++){
+    //         toSend.playerLocations.push({
+    //             x:this.players[i].getX(),
+    //             y:this.players[i].getY()
+    //         });
+    //     }
+    //     toSend=JSON.stringify(toSend);
+    //     for(let i=0;i<this.players.length;i++){
+    //         this.players[i].ws.send(toSend);
+    //     }
+    // }
     onmessage(index,message){
         let p=JSON.parse(message.data);
         if(p.type=="keyPressed"){
@@ -53,6 +88,9 @@ class Game{
             if(p.key=="s")this.players[index].keyDown=false;
             if(p.key=="a")this.players[index].keyLeft=false;
             if(p.key=="d")this.players[index].keyRight=false;
+        }
+        if(p.type=="mouseMove"){
+            this.players[index].lookingAt=p.lookingAt;
         }
     }
 }

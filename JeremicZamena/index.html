@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/444daa6a6a.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="pages">
+        <div class="container">
+            <div class="main-menu">
+                <h2>Super Kul Igrica</h2>
+
+                <button class="btn play" onclick="lvlSelect();">
+                    Play
+                </button>
+
+                <div class="dva">
+                    <button class="btn">
+                        Level Editor
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="lvlSelect" class="container lvlSelect invisible">
+            <div class="main-menu">
+                    <h3>Level Select</h3>
+                    <button class="btn">
+                        Level 1
+                    </button>
+                    <button class="btn">
+                        Level 2
+                    </button>
+                    <button class="btn">
+                        Level 3
+                    </button>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script>
+    function lvlSelect() {
+        document.getElementById('lvlSelect').classList.toggle('invisible');
+    }
+</script>
+
+</html>

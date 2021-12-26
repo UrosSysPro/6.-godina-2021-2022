@@ -13,6 +13,8 @@ class Player extends Block{
         this.keyRight=false;
         this.maxSpeed=10;
         this.acceleration=4;
+
+        this.lookingAt=0;
     }
     update(){
         let v=this.body.GetLinearVelocity();

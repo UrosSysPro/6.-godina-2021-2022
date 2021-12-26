@@ -1,5 +1,7 @@
 class Game{
-    constructor(canvas,w,h){
+    constructor(canvas,w,h,ws){
+        this.ws=ws;
+
         this.canvas=canvas;
         this.context=canvas.getContext("2d");
         canvas.width=w;
@@ -8,18 +10,23 @@ class Game{
         this.h=h;
 
         this.players=[];
-        this.myId;
+        this.myId=-1;
         this.bullets=[];
         this.walls=[];
+
     }
     draw(){
-        drawPlayers();
-        drawBullets();
-        drawWalls();
+        this.context.clearRect(0,0,this.w,this.h);
+        this.drawPlayers();
+        // this.drawBullets();
+        // this.drawWalls();
     }
     drawPlayers(){
         for(let i=0;i<this.players.length;i++){
-            
+            let x=this.players[i].x;
+            let y=this.players[i].y;
+           
+            this.context.fillRect(x,y,20,20);
         }
     }
 
@@ -37,7 +44,7 @@ class Game{
                 this.players[i].x=locations[i].x;
                 this.players[i].y=locations[i].y;
             }
-            let locations=message.bulletLocations;
+            locations=message.bulletLocations;
             for(let i=0;i<locations.length;i++){
                 this.bullets[i].x=locations[i].x;
                 this.bullets[i].y=locations[i].y;
@@ -46,5 +53,20 @@ class Game{
         if(message.type=="removePlayer"){
             this.players.splice(message.playerId,1);
         }
+    }
+
+    keyDown(key){
+        let toSend={
+            type:"keyPressed",
+            key:key
+        }
+        ws.send(JSON.stringify(toSend));
+    }
+    keyUp(key){
+        let toSend={
+            type:"keyReleased",
+            key:key
+        }
+        ws.send(JSON.stringify(toSend));
     }
 }

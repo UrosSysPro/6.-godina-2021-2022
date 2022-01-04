@@ -37,8 +37,10 @@ class Game{
         //obavestimo sve igrace da je ubacen igrac
         toSend={
             type:"playerAdded",
-            x:x,
-            y:y
+            newPlayer:{
+                x:x,
+                y:y
+            }
         };
         toSend=JSON.stringify(toSend);
         for(let i=0;i<this.players.length;i++){
@@ -52,7 +54,8 @@ class Game{
         for(let i=0;i<this.players.length;i++){
             this.players[i].ws.send(JSON.stringify({
                 type:"playerRemoved",
-                myId:i
+                myId:i,
+                playerId:index
             }));
         }
     }

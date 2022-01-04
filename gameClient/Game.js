@@ -1,5 +1,6 @@
 class Game{
     constructor(canvas,w,h,ws){
+        this.connectionOpened=false;
         this.ws=ws;
 
         this.canvas=canvas;
@@ -13,7 +14,6 @@ class Game{
         this.myId=-1;
         this.bullets=[];
         this.walls=[];
-
     }
     draw(){
         this.context.clearRect(0,0,this.w,this.h);
@@ -40,18 +40,26 @@ class Game{
         }
         if(message.type=="updateLocations"){
             let locations=message.playerLocations;
-            for(let i=0;i<locations.length;i++){
+            let len=this.players.length<locations.length?this.players.length:locations.length;
+    
+            for(let i=0;i<len;i++){
                 this.players[i].x=locations[i].x;
                 this.players[i].y=locations[i].y;
             }
             locations=message.bulletLocations;
-            for(let i=0;i<locations.length;i++){
+            len=this.bullets.length<locations.length?this.bullets.length:locations.length;
+    
+            for(let i=0;i<len;i++){
                 this.bullets[i].x=locations[i].x;
                 this.bullets[i].y=locations[i].y;
             }
         }
-        if(message.type=="removePlayer"){
+        if(message.type=="playerRemoved"){
+            this.myId=message.myId;
             this.players.splice(message.playerId,1);
+        }
+        if(message.type=="playerAdded"){
+            this.players.push(message.newPlayer);
         }
     }
 

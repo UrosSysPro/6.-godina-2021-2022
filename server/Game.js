@@ -10,6 +10,7 @@ class Game{
         this.h=h;
         this.world=new b2World(new b2Vec2(0,0),false);
         this.players=[];
+        this.walls=[];
     }
     update(){
         for(let i=0;i<this.players.length;i++){
@@ -18,6 +19,7 @@ class Game{
         this.world.Step(1/60,5,5);
     }
     addPlayer(x,y,w,h,ws){
+        //napravimo playera i obavestimo ga o ostalim igracima i zidovima
         this.players.push(new Player(x,y,w,h,this.world,ws));
         let toSend={
             type:"init",
@@ -33,48 +35,63 @@ class Game{
         }
         ws.send(JSON.stringify(toSend));
         //obavestimo sve igrace da je ubacen igrac
-
+        toSend={
+            type:"playerAdded",
+            x:x,
+            y:y
+        };
+        toSend=JSON.stringify(toSend);
+        for(let i=0;i<this.players.length;i++){
+            this.players[i].ws.send(toSend);
+        }
     }
     removePlayer(index){
         this.world.DestroyBody(this.players[index].body);
         this.players.splice(index,1);
         //obavestiti sve da je izbrisan player
-    }
-    send(){
-        let toSend={
-            locations:[]
-        };
         for(let i=0;i<this.players.length;i++){
-            toSend.locations.push({
-                x:this.players[i].getX(),
-                y:this.players[i].getY(),
-                a:this.players[i].getA(),
-                lookingAt:this.players[i].lookingAt
-            });
-        }
-        for(let i=0;i<this.players.length;i++){
-            toSend.locations[i].me=true;
-            this.players[i].ws.send(JSON.stringify(toSend));
-            toSend.locations[i].me=false;
+            this.players[i].ws.send(JSON.stringify({
+                type:"playerRemoved",
+                myId:i
+            }));
         }
     }
     // send(){
     //     let toSend={
-    //         type:"updateLocations",
-    //         playerLocations:[],
-    //         bulletLocations:[]
-    //     }   
+    //         locations:[]
+    //     };
     //     for(let i=0;i<this.players.length;i++){
-    //         toSend.playerLocations.push({
+    //         toSend.locations.push({
     //             x:this.players[i].getX(),
-    //             y:this.players[i].getY()
+    //             y:this.players[i].getY(),
+    //             a:this.players[i].getA(),
+    //             lookingAt:this.players[i].lookingAt
     //         });
     //     }
-    //     toSend=JSON.stringify(toSend);
     //     for(let i=0;i<this.players.length;i++){
-    //         this.players[i].ws.send(toSend);
+    //         toSend.locations[i].me=true;
+    //         this.players[i].ws.send(JSON.stringify(toSend));
+    //         toSend.locations[i].me=false;
     //     }
     // }
+    send(){
+        let toSend={
+            type:"updateLocations",
+            playerLocations:[],
+            bulletLocations:[]
+        }   
+        for(let i=0;i<this.players.length;i++){
+            toSend.playerLocations.push({
+                x:this.players[i].getX(),
+                y:this.players[i].getY()
+            });
+        }
+        toSend = JSON.stringify(toSend);
+
+        for(let i=0;i<this.players.length;i++){
+            this.players[i].ws.send(toSend);
+        }
+    }
     onmessage(index,message){
         let p=JSON.parse(message.data);
         if(p.type=="keyPressed"){

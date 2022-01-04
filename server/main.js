@@ -13,11 +13,13 @@ server.on("connection",function(ws){
     connections.push(ws);
 
     ws.onclose=function(){
+        console.log("close neko je izasao");
         let index=connections.indexOf(ws);
         connections.splice(index,1);
         game.removePlayer(index);
     };
     ws.onerror=function(){
+        console.log("error neko je izasao");
         let index=connections.indexOf(ws);
         connections.splice(index,1);
         game.removePlayer(index);

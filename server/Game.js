@@ -30,7 +30,11 @@ class Game{
         for(let i=0;i<this.players.length;i++){
             toSend.players.push({
                 x:this.players[i].getX(),
-                y:this.players[i].getY()
+                y:this.players[i].getY(),
+                w:this.players[i].w,
+                h:this.players[i].h,
+                a:this.players[i].getA(),
+                lookingAt:this.players[i].lookingAt
             });
         }
         ws.send(JSON.stringify(toSend));
@@ -39,11 +43,13 @@ class Game{
             type:"playerAdded",
             newPlayer:{
                 x:x,
-                y:y
+                y:y,
+                w:w,
+                h:h
             }
         };
         toSend=JSON.stringify(toSend);
-        for(let i=0;i<this.players.length;i++){
+        for(let i=0;i<this.players.length-1;i++){
             this.players[i].ws.send(toSend);
         }
     }
@@ -59,24 +65,7 @@ class Game{
             }));
         }
     }
-    // send(){
-    //     let toSend={
-    //         locations:[]
-    //     };
-    //     for(let i=0;i<this.players.length;i++){
-    //         toSend.locations.push({
-    //             x:this.players[i].getX(),
-    //             y:this.players[i].getY(),
-    //             a:this.players[i].getA(),
-    //             lookingAt:this.players[i].lookingAt
-    //         });
-    //     }
-    //     for(let i=0;i<this.players.length;i++){
-    //         toSend.locations[i].me=true;
-    //         this.players[i].ws.send(JSON.stringify(toSend));
-    //         toSend.locations[i].me=false;
-    //     }
-    // }
+    
     send(){
         let toSend={
             type:"updateLocations",
@@ -86,7 +75,8 @@ class Game{
         for(let i=0;i<this.players.length;i++){
             toSend.playerLocations.push({
                 x:this.players[i].getX(),
-                y:this.players[i].getY()
+                y:this.players[i].getY(),
+                lookingAt:this.players[i].lookingAt
             });
         }
         toSend = JSON.stringify(toSend);

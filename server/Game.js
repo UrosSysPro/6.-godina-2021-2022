@@ -13,8 +13,9 @@ class Game{
         this.walls=[];
     }
     update(){
+        let time=Date.now();
         for(let i=0;i<this.players.length;i++){
-            this.players[i].update();
+            this.players[i].update(time);
         }
         this.world.Step(1/60,5,5);
     }
@@ -78,6 +79,12 @@ class Game{
                 y:this.players[i].getY(),
                 lookingAt:this.players[i].lookingAt
             });
+            for(let j=0;j<this.players[i].bullets.length;j++){
+                toSend.bulletLocations.push({
+                    x:this.players[i].bullets[j].getX(),
+                    y:this.players[i].bullets[j].getY()
+                });
+            }
         }
         toSend = JSON.stringify(toSend);
 
@@ -101,6 +108,12 @@ class Game{
         }
         if(p.type=="mouseMove"){
             this.players[index].lookingAt=p.lookingAt;
+        }
+        if(p.type=="mouseDown"){
+            this.players[index].firing=true;
+        }
+        if(p.type=="mouseUp"){
+            this.players[index].firing=false;
         }
     }
 }

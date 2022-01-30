@@ -1,4 +1,5 @@
 let Block=require("./Block").Block;
+let Bullet=require("./Bullet").Bullet;
 
 class Player extends Block{
     constructor(x,y,w,h,world,ws){
@@ -14,8 +15,13 @@ class Player extends Block{
         this.acceleration=4;
 
         this.lookingAt=0;
+
+        this.fireCooldown=100;
+        this.lastTimeFired=0;
+        this.firing=false;
+        this.bullets=[];
     }
-    update(){
+    update(time){
         let v=this.body.GetLinearVelocity();
         // v.x=0;
         // v.y=0;
@@ -36,6 +42,17 @@ class Player extends Block{
             v.x=v.x>this.maxSpeed?this.maxSpeed:v.x;
         }
         
+        if(this.firing&&(time-this.lastTimeFired>this.fireCooldown)){
+            this.lastTimeFired=time;
+            let world=this.body.GetWorld();
+            let r=3;
+            let vx=Math.cos(this.lookingAt)*15;
+            let vy=Math.sin(this.lookingAt)*15;
+            let x=this.getX()+2*vx;
+            let y=this.getY()+2*vy;
+            this.bullets.push(new Bullet(x,y,r,vx,vy,world));
+        }
+
         this.body.SetLinearVelocity(v);
     }
 }

@@ -47,7 +47,7 @@ class Game{
         this.context.scale(this.camera.scale,this.camera.scale);
 
         this.drawPlayers();
-        // this.drawBullets();
+        this.drawBullets();
         // this.drawWalls();
         
         this.context.scale(1/this.camera.scale,1/this.camera.scale);
@@ -83,6 +83,24 @@ class Game{
         }
     }
 
+    drawBullets(){
+        for(let i=0;i<this.bullets.length;i++){
+            let x=this.bullets[i].x;
+            let y=this.bullets[i].y;
+
+            this.context.fillStyle="#000";
+
+            this.context.translate(x,y);
+            this.context.beginPath();
+            this.context.fillStyle="#000";
+            this.context.arc(0,0,2,0,Math.PI*2);
+            this.context.closePath();
+            this.context.fill();
+            this.context.translate(-x,-y);
+        }
+    }
+    
+
     onmessage(message){
         message=JSON.parse(message.data);
 
@@ -100,13 +118,14 @@ class Game{
                 this.players[i].y=locations[i].y;
                 this.players[i].lookingAt=locations[i].lookingAt;
             }
-            locations=message.bulletLocations;
-            len=this.bullets.length<locations.length?this.bullets.length:locations.length;
+            // locations=message.bulletLocations;
+            // len=this.bullets.length<locations.length?this.bullets.length:locations.length;
     
-            for(let i=0;i<len;i++){
-                this.bullets[i].x=locations[i].x;
-                this.bullets[i].y=locations[i].y;
-            }
+            // for(let i=0;i<len;i++){
+            //     this.bullets[i].x=locations[i].x;
+            //     this.bullets[i].y=locations[i].y;
+            // }
+            this.bullets=message.bulletLocations;
         }
         if(message.type=="playerRemoved"){
             this.myId=message.myId;
@@ -122,6 +141,7 @@ class Game{
             type:"keyPressed",
             key:key
         }
+        if(!this.connectionOpened)return;
         ws.send(JSON.stringify(toSend));
     }
     keyUp(key){
@@ -129,6 +149,7 @@ class Game{
             type:"keyReleased",
             key:key
         }
+        if(!this.connectionOpened)return;
         ws.send(JSON.stringify(toSend));
     }
     mouseMove(e){
@@ -146,6 +167,21 @@ class Game{
             type:"mouseMove",
             lookingAt:this.lookingAt
         }
+        if(!this.connectionOpened)return;
+        this.ws.send(JSON.stringify(toSend));
+    }
+    mouseUp(e){
+        let toSend={
+            type:"mouseUp"
+        }
+        if(!this.connectionOpened)return;
+        this.ws.send(JSON.stringify(toSend));
+    }
+    mouseDown(e){
+        let toSend={
+            type:"mouseDown"
+        }
+        if(!this.connectionOpened)return;
         this.ws.send(JSON.stringify(toSend));
     }
     resize(){

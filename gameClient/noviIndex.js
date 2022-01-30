@@ -13,6 +13,9 @@ function main(){
     document.body.addEventListener("mousemove",mouseMove);
     document.body.addEventListener("keydown",keyDown);
     document.body.addEventListener("keyup",keyUp);
+    document.body.addEventListener("mousedown",mouseDown);
+    document.body.addEventListener("mouseup",mouseUp);
+    
     // document.body.addEventListener("resize",resize);
 
     ws.onopen=function(){
@@ -53,4 +56,11 @@ function keyDown(e){
 }
 function resize(){
     game.resize();
+}
+
+function mouseUp(e){
+    game.mouseUp(e);
+}
+function mouseDown(e){
+    game.mouseDown(e);
 }

@@ -1,7 +1,7 @@
 let Box2d=require("box2dweb");
 let b2World=Box2d.Dynamics.b2World;
 let b2Vec2 = Box2d.Common.Math.b2Vec2;
-
+let GameCollisionListener=require("./GameCollisionListener").GameCollisionListener;
 let Player=require("./Player").Player;
 
 class Game{
@@ -9,6 +9,7 @@ class Game{
         this.w=w;
         this.h=h;
         this.world=new b2World(new b2Vec2(0,0),false);
+        this.world.SetContactListener(new GameCollisionListener(this));
         this.players=[];
         this.walls=[];
     }

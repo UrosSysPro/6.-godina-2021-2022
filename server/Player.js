@@ -17,6 +17,7 @@ class Player extends Block{
         this.lookingAt=0;
 
         this.fireCooldown=100;
+        this.maxBullets=100;
         this.lastTimeFired=0;
         this.firing=false;
         this.bullets=[];
@@ -41,16 +42,32 @@ class Player extends Block{
             v.x+=this.acceleration;
             v.x=v.x>this.maxSpeed?this.maxSpeed:v.x;
         }
+        let intenzitet=Math.sqrt(v.x*v.x+v.y*v.y);
+        if(intenzitet>this.maxSpeed){
+            v.x/=intenzitet;
+            v.y/=intenzitet;
+            v.x*=this.maxSpeed;
+            v.y*=this.maxSpeed;
+        }
         
         if(this.firing&&(time-this.lastTimeFired>this.fireCooldown)){
             this.lastTimeFired=time;
             let world=this.body.GetWorld();
             let r=3;
+
             let vx=Math.cos(this.lookingAt)*15;
             let vy=Math.sin(this.lookingAt)*15;
+            // let vx=Math.cos(this.lookingAt)*1;
+            // let vy=Math.sin(this.lookingAt)*1;
+           
             let x=this.getX()+2*vx;
             let y=this.getY()+2*vy;
-            this.bullets.push(new Bullet(x,y,r,vx,vy,world));
+            this.bullets.push(new Bullet(x,y,r,vx,vy,10,world));
+
+            if(this.bullets.length>this.maxBullets){
+                world.DestroyBody(this.bullets[0].body);
+                this.bullets.shift();
+            }
         }
 
         this.body.SetLinearVelocity(v);

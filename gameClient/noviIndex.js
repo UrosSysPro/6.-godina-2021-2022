@@ -64,3 +64,10 @@ function mouseUp(e){
 function mouseDown(e){
     game.mouseDown(e);
 }
+
+function ping(){
+    game.ping();
+}
+function wheel(e){
+    game.wheel(e);
+}

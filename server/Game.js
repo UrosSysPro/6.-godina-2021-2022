@@ -36,7 +36,8 @@ class Game{
                 w:this.players[i].w,
                 h:this.players[i].h,
                 a:this.players[i].getA(),
-                lookingAt:this.players[i].lookingAt
+                lookingAt:this.players[i].lookingAt,
+                skinId:this.players[i].skinId
             });
         }
         ws.send(JSON.stringify(toSend));
@@ -47,7 +48,8 @@ class Game{
                 x:x,
                 y:y,
                 w:w,
-                h:h
+                h:h,
+                skinId:this.players[this.players.length-1].skinId
             }
         };
         toSend=JSON.stringify(toSend);
@@ -78,7 +80,8 @@ class Game{
             toSend.playerLocations.push({
                 x:this.players[i].getX(),
                 y:this.players[i].getY(),
-                lookingAt:this.players[i].lookingAt
+                lookingAt:this.players[i].lookingAt,
+                health:this.players[i].health
             });
             for(let j=0;j<this.players[i].bullets.length;j++){
                 toSend.bulletLocations.push({
@@ -115,6 +118,12 @@ class Game{
         }
         if(p.type=="mouseUp"){
             this.players[index].firing=false;
+        }
+        if(p.type=="ping"){
+            let toSend={
+                type:"pong"
+            }
+            this.players[index].ws.send(JSON.stringify(toSend));
         }
     }
 }

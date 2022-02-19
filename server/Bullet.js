@@ -8,7 +8,7 @@ let	b2BodyDef = Box2D.Dynamics.b2BodyDef
 ,   b2CircleShape=Box2D.Collision.Shapes.b2CircleShape;
 
 class Bullet{
-    constructor(x,y,r,vx,vy,damage,world){
+    constructor(x,y,r,vx,vy,damage,owner,world){
         var fixDef = new b2FixtureDef();
         fixDef.density = 1.0;
         fixDef.friction = 0.2;
@@ -26,10 +26,12 @@ class Bullet{
         bodyDef.linearDamping=0;
 
         this.damage=damage;
+        this.toDelete=false;
         this.body=world.CreateBody(bodyDef);
         this.fixture=this.body.CreateFixture(fixDef);
         this.fixture.SetUserData(this);
     }
+
     getX(){
         return this.body.GetPosition().x*scale;
     }

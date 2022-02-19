@@ -1,12 +1,14 @@
 class Game{
     constructor(canvas,w,h,ws){
+        this.lastPing=0;
+
         this.connectionOpened=false;
         this.ws=ws;
         this.camera={
             x:w/2,
             y:h/2,
             a:0,
-            scale:1
+            scale:2
         };
 
         this.mx=w/2;
@@ -16,6 +18,7 @@ class Game{
 
         this.canvas=canvas;
         this.context=canvas.getContext("2d");
+        this.context.imageSmoothingEnabled=false;
         canvas.width=w;
         canvas.height=h;
         this.w=w;
@@ -25,17 +28,39 @@ class Game{
         this.myId=-1;
         this.bullets=[];
         this.walls=[];
+
+        let img=new Image();
+        img.src="unnamed.png";
+        this.spriteInfo={
+            pad:4,
+            sw:32,
+            sh:32,
+            numberX:4,
+            numberY:4
+        }
+        // console.log(img);
+        this.skins=[img];
+        
     }
     updateCamera(){
         if(this.myId==-1)return;
-        this.camera.x=-this.players[this.myId].x+this.w/2;
-        this.camera.y=-this.players[this.myId].y+this.h/2;
+        //ova 4 reda sigurno rade
+        // this.camera.x=-this.players[this.myId].x+this.w/2;
+        // this.camera.y=-this.players[this.myId].y+this.h/2;
+        
+        // this.camera.x+=(this.w/2-this.mx)/3;
+        // this.camera.y+=(this.h/2-this.my)/3;
+        
+        this.camera.x=-this.players[this.myId].x*this.camera.scale;
+        this.camera.y=-this.players[this.myId].y*this.camera.scale;
+        this.camera.x+=this.w/2;
+        this.camera.y+=this.h/2;
+        this.camera.x+=(this.w/2-this.mx)/3;
+        this.camera.y+=(this.h/2-this.my)/3;
         
         // this.camera.x/=this.camera.scale;
         // this.camera.y/=this.camera.scale;
 
-        this.camera.x+=(this.w/2-this.mx)/3;
-        this.camera.y+=(this.h/2-this.my)/3;
     }
     draw(){
         this.updateCamera()
@@ -64,19 +89,39 @@ class Game{
             let w=this.players[i].w;
             let h=this.players[i].h;
             let a=this.players[i].a;
+            let health=this.players[i].health;
+
             let lookingAt=this.players[i].lookingAt;
+            let skinId=this.players[i].skinId;
 
             this.context.fillStyle="#000";
 
             this.context.translate(x,y);
             this.context.rotate(a);
-            this.context.fillRect(-w,-h,w*2,h*2);
+            // ovde se crta igrac
+            // let sx=0+this.spriteInfo.pad;
+            // let sy=0+this.spriteInfo.pad;
+            // let sw=this.spriteInfo.sw-2*this.spriteInfo.pad;
+            // let sh=this.spriteInfo.sh-2*this.spriteInfo.pad;
+            let sx=0;
+            let sy=0;
+            let sw=this.spriteInfo.sw;
+            let sh=this.spriteInfo.sh;
+            this.context.drawImage(this.skins[skinId],sx,sy,sw,sh,-w,-h,w*2,h*2);
+            // this.context.fillRect(-w,-h,w*2,h*2);
             
-            this.context.fillStyle="#00ef7f";
+            this.context.fillStyle="#Af207A";
 
             this.context.rotate(lookingAt);
+            //ovde se crta puska
             this.context.fillRect(0,-2.5,w*2,5);
             this.context.rotate(-lookingAt);
+
+
+            //ovde se crta health bar
+            this.context.fillStyle="#00ef7f"
+            let width=(w*2)*health/100;
+            this.context.fillRect(-w,-h-5,width,3);
 
             this.context.rotate(-a);
             this.context.translate(-x,-y);
@@ -117,6 +162,7 @@ class Game{
                 this.players[i].x=locations[i].x;
                 this.players[i].y=locations[i].y;
                 this.players[i].lookingAt=locations[i].lookingAt;
+                this.players[i].health=locations[i].health;
             }
             // locations=message.bulletLocations;
             // len=this.bullets.length<locations.length?this.bullets.length:locations.length;
@@ -133,6 +179,10 @@ class Game{
         }
         if(message.type=="playerAdded"){
             this.players.push(message.newPlayer);
+        }
+        if(message.type=="pong"){
+            console.log("pong");
+            console.log(Date.now()-this.lastPing);
         }
     }
 
@@ -184,10 +234,27 @@ class Game{
         if(!this.connectionOpened)return;
         this.ws.send(JSON.stringify(toSend));
     }
+    wheel(e){
+        let amount=e.deltaY;
+        if(amount>0){
+            this.camera.scale*=1.05;
+        }else{
+            this.camera.scale/=1.05;
+        }
+    }
     resize(){
         this.w=window.innerWidth;
         this.h=window.innerHeight;
         this.canvas.width=this.w;
         this.canvas.height=this.h;
+    }
+    ping(){
+        console.log("ping");
+        this.lastPing=Date.now();
+        let toSend={
+            type:"ping"
+        }
+        if(!this.connectionOpened)return;
+        this.ws.send(JSON.stringify(toSend));
     }
 }

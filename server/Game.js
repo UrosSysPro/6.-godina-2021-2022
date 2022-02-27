@@ -3,6 +3,7 @@ let b2World=Box2d.Dynamics.b2World;
 let b2Vec2 = Box2d.Common.Math.b2Vec2;
 let GameCollisionListener=require("./GameCollisionListener").GameCollisionListener;
 let Player=require("./Player").Player;
+let Wall=require("./Wall").Wall;
 
 class Game{
     constructor(w,h){
@@ -11,7 +12,12 @@ class Game{
         this.world=new b2World(new b2Vec2(0,0),false);
         this.world.SetContactListener(new GameCollisionListener(this));
         this.players=[];
-        this.walls=[];
+        this.currentLevel={
+            spawnPoint:{x:0,y:0},
+            walls:[],
+            decoration:[]
+        };
+        this.loadLevel("levels/level1.json");
     }
     update(){
         let time=Date.now();
@@ -38,6 +44,14 @@ class Game{
                 a:this.players[i].getA(),
                 lookingAt:this.players[i].lookingAt,
                 skinId:this.players[i].skinId
+            });
+        }
+        for(let i=0;i<this.currentLevel.walls.length;i++){
+            toSend.walls.push({
+                x:this.currentLevel.walls[i].getX(),
+                y:this.currentLevel.walls[i].getY(),
+                w:this.currentLevel.walls[i].w,
+                h:this.currentLevel.walls[i].h,
             });
         }
         ws.send(JSON.stringify(toSend));
@@ -124,6 +138,24 @@ class Game{
                 type:"pong"
             }
             this.players[index].ws.send(JSON.stringify(toSend));
+        }
+    }
+
+    loadLevel(fileName){
+        const fs = require('fs')
+        // for(let i=0;i<this.currentLevel.walls.length;i++){
+
+        // }
+        try {
+            const data = fs.readFileSync(fileName, 'utf8')
+            let level=JSON.parse(data);
+            this.currentLevel=level;
+        //   console.log(this.currentLevel);
+            for(let i=0;i<level.walls.length;i++){
+                level.walls[i]=new Wall(level.walls[i],this.world);
+            }
+        } catch (err) {
+          console.error(err)
         }
     }
 }

@@ -27,6 +27,7 @@ class Bullet{
 
         this.damage=damage;
         this.toDelete=false;
+        this.owner=owner;
         this.body=world.CreateBody(bodyDef);
         this.fixture=this.body.CreateFixture(fixDef);
         this.fixture.SetUserData(this);

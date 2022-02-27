@@ -89,10 +89,9 @@ class Player extends Block{
     }
 
     hit(bullet){
-        if(bullet.owner==this){
-            bullet.toDelete=true;
+        if(bullet.owner!=this){
+            this.health-=bullet.damage;
         }
-        this.health-=bullet.damage;
         bullet.toDelete=true;
     }
 }

@@ -7,6 +7,7 @@ let Wall=require("./Wall").Wall;
 
 class Game{
     constructor(w,h){
+        this.connections=[];
         this.w=w;
         this.h=h;
         this.world=new b2World(new b2Vec2(0,0),false);
@@ -21,8 +22,16 @@ class Game{
     }
     update(){
         let time=Date.now();
+        let toDelete=[];
         for(let i=0;i<this.players.length;i++){
             this.players[i].update(time);
+            if(!this.players[i].isAlive){
+               toDelete.push(this.players[i]);
+            }
+        }
+        for(let i=0;i<toDelete.length;i++){
+            toDelete[i].ws.send(JSON.stringify({type:"killed"}));
+            toDelete[i].ws.close();
         }
         this.world.Step(1/60,5,5);
     }
@@ -72,7 +81,8 @@ class Game{
         }
     }
     removePlayer(index){
-        this.world.DestroyBody(this.players[index].body);
+        this.players[index].delete();
+        // this.world.DestroyBody(this.players[index].body);
         this.players.splice(index,1);
         //obavestiti sve da je izbrisan player
         for(let i=0;i<this.players.length;i++){

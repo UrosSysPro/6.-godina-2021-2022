@@ -16,9 +16,10 @@ class Player extends Block{
 
         this.lookingAt=0;
         this.health=100;
+        this.isAlive=true;
 
         this.fireCooldown=100;
-        this.maxBullets=100;
+        this.maxBullets=10000;
         this.lastTimeFired=0;
         this.firing=false;
         this.bullets=[];
@@ -55,12 +56,15 @@ class Player extends Block{
         
         let world=this.body.GetWorld();
            
-        for(let i=0;i<this.bullets.length;i++){
+        
+        let i=0;
+        while(i<this.bullets.length){
             if(this.bullets[i].toDelete){
-                world.DestroyBody(this.bullets[0].body);
+                world.DestroyBody(this.bullets[i].body);
                 this.bullets.splice(i,1);
-                i--;
+                continue;
             }
+            i++;
         }
 
         if(this.firing&&(time-this.lastTimeFired>this.fireCooldown)){
@@ -86,6 +90,10 @@ class Player extends Block{
         }
 
         this.body.SetLinearVelocity(v);
+
+        if(this.health<=0){
+            this.isAlive=false;
+        }
     }
 
     hit(bullet){
@@ -93,6 +101,14 @@ class Player extends Block{
             this.health-=bullet.damage;
         }
         bullet.toDelete=true;
+    }
+
+    delete(){
+        let world=this.body.GetWorld();
+        world.DestroyBody(this.body);
+        for(let i=0;i<this.bullets.length;i++){
+            world.DestroyBody(this.bullets[i].body);
+        }
     }
 }
 

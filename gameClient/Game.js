@@ -8,7 +8,7 @@ class Game{
             x:w/2,
             y:h/2,
             a:0,
-            scale:2
+            scale:0.6
         };
 
         this.mx=w/2;
@@ -67,17 +67,25 @@ class Game{
         this.updateCamera()
 
         this.context.clearRect(0,0,this.w,this.h);
-        
-        this.context.translate(this.camera.x,this.camera.y);
-        this.context.rotate(this.camera.a);
-        this.context.scale(this.camera.scale,this.camera.scale);
+        let width=this.w/this.camera.scale;
+        let height=this.h/this.camera.scale;
 
+      
+        this.context.translate(this.camera.x,this.camera.y);
+        this.context.scale(this.camera.scale,this.camera.scale);
+        this.context.translate(width/2,height/2);
+        this.context.rotate(this.camera.a);
+        this.context.translate(-width/2,-height/2);
+
+        this.drawWalls();
         this.drawPlayers();
         this.drawBullets();
-        // this.drawWalls();
         
-        this.context.scale(1/this.camera.scale,1/this.camera.scale);
+        
+        this.context.translate(width/2,height/2);
         this.context.rotate(-this.camera.a);
+        this.context.translate(-width/2,-height/2);
+        this.context.scale(1/this.camera.scale,1/this.camera.scale);
         this.context.translate(-this.camera.x,-this.camera.y);
     }
     
@@ -145,7 +153,22 @@ class Game{
             this.context.translate(-x,-y);
         }
     }
-    
+    drawWalls(){
+        for(let i=0;i<this.walls.length;i++){
+            let x=this.walls[i].x;
+            let y=this.walls[i].y;
+            let w=this.walls[i].w;
+            let h=this.walls[i].h;
+           
+            this.context.fillStyle="#000";
+
+            this.context.translate(x,y);
+
+            this.context.fillRect(-w,-h,w*2,h*2);
+            
+            this.context.translate(-x,-y);
+        }
+    }
 
     onmessage(message){
         message=JSON.parse(message.data);
@@ -172,6 +195,7 @@ class Game{
             //     this.bullets[i].x=locations[i].x;
             //     this.bullets[i].y=locations[i].y;
             // }
+
             this.bullets=message.bulletLocations;
         }
         if(message.type=="playerRemoved"){
@@ -184,6 +208,10 @@ class Game{
         if(message.type=="pong"){
             console.log("pong");
             console.log(Date.now()-this.lastPing);
+        }
+        if(message.type=="killed"){
+            alert("uginuce");
+            console.log("ubiven");
         }
     }
 
@@ -242,12 +270,18 @@ class Game{
         }else{
             this.camera.scale/=1.05;
         }
+        // if(amount>0){
+        //     this.camera.a+=0.1;
+        // }else{
+        //     this.camera.a-=0.1;
+        // }
     }
     resize(){
         this.w=window.innerWidth;
         this.h=window.innerHeight;
         this.canvas.width=this.w;
         this.canvas.height=this.h;
+        this.context.imageSmoothingEnabled=false;
     }
     ping(){
         console.log("ping");

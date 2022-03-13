@@ -5,27 +5,26 @@ let game=new Game(500,500);
 
 let server=new WebSocket.Server({port:5000});
 
-let connections=[];
 
 server.on("connection",function(ws){
     console.log("povezano");
     game.addPlayer(game.w/2,game.h/2,10,10,ws);
-    connections.push(ws);
+    game.connections.push(ws);
 
     ws.onclose=function(){
         console.log("close neko je izasao");
-        let index=connections.indexOf(ws);
-        connections.splice(index,1);
+        let index=game.connections.indexOf(ws);
+        game.connections.splice(index,1);
         game.removePlayer(index);
     };
     ws.onerror=function(){
         console.log("error neko je izasao");
-        let index=connections.indexOf(ws);
-        connections.splice(index,1);
+        let index=game.connections.indexOf(ws);
+        game.connections.splice(index,1);
         game.removePlayer(index);
     };
     ws.onmessage=function(message){
-        game.onmessage(connections.indexOf(ws),message);
+        game.onmessage(game.connections.indexOf(ws),message);
     }
 });
 

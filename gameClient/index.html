@@ -6,12 +6,59 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/444daa6a6a.js" crossorigin="anonymous"></script>
+
 </head>
-<body onload="main()" onresize="game.resize()" onmousewheel="wheel(event)">
-    <canvas></canvas>
+<body onresize="game.resize()" onmousewheel="wheel(event)">
+    <canvas id="gameCanvas"></canvas>
     <button onclick="ping()" id="pingBtn">ping</button>
     <script src="Game.js"></script>
     <script src="noviIndex.js"></script>
 
+    <div class="pages">
+        <div id="startPage" class="container">
+            <div class="main-menu">
+                <h2>Super Kul Igrica</h2>
+
+                <button class="btn play" onclick="lvlSelect();">
+                    Play
+                </button>
+
+                <div class="dva">
+                    <button class="btn">
+                        Level Editor
+                    </button>
+                    <button class="btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="lvlSelect" class="container lvlSelect invisible">
+            <div class="main-menu">
+                    <!-- <h3>Level Select</h3>
+                    <button class="btn">
+                        Level 1
+                    </button>
+                    <button class="btn">
+                        Level 2
+                    </button>
+                    <button class="btn">
+                        Level 3
+                    </button> -->
+
+                    <input type="text" id="usernameInput" placeholder="username">
+
+                    <button class="btn" onclick="startGame(event)">Start</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function lvlSelect() {
+            document.getElementById('lvlSelect').classList.toggle('invisible');
+        }
+    </script>
 </body>
 </html>

@@ -7,6 +7,8 @@ function main(){
     let w=window.innerWidth;
     let h=window.innerHeight;
 
+    if(ws!=undefined)ws.close();
+
     ws=new WebSocket("ws://localhost:5000");
     game=new Game(canvas,w,h,ws);
 
@@ -70,4 +72,12 @@ function ping(){
 }
 function wheel(e){
     game.wheel(e);
+}
+
+
+function startGame(e){
+
+    let pages=document.getElementsByClassName("pages")[0];
+    pages.style.display="none";
+    main();
 }

@@ -210,8 +210,7 @@ class Game{
             console.log(Date.now()-this.lastPing);
         }
         if(message.type=="killed"){
-            alert("uginuce");
-            console.log("ubiven");
+            showMenu();
         }
     }
 

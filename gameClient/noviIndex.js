@@ -76,8 +76,14 @@ function wheel(e){
 
 
 function startGame(e){
-
+    hideMenu();
+    main();
+}
+function hideMenu(){
     let pages=document.getElementsByClassName("pages")[0];
     pages.style.display="none";
-    main();
+}
+function showMenu(){
+    let pages=document.getElementsByClassName("pages")[0];
+    pages.style.display="block";
 }

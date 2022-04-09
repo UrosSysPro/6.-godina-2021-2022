@@ -16,9 +16,17 @@ class GameCollisionListener extends b2ContactListener{
         
         if(b1 instanceof Bullet && b2 instanceof Player){
             b2.hit(b1);
+            return;
         }
         if(b2 instanceof Bullet && b1 instanceof Player){
             b1.hit(b2);
+            return;
+        }
+        if(b1 instanceof Bullet ){
+            b1.toDelete=true;
+        }
+        if(b2 instanceof Bullet){
+            b2.toDelete=true;
         }
     }
     EndContact(contact){

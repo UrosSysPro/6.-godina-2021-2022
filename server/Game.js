@@ -105,12 +105,13 @@ class Game{
                 x:this.players[i].getX(),
                 y:this.players[i].getY(),
                 lookingAt:this.players[i].lookingAt,
-                health:this.players[i].health
+                health:this.players[i].health, 
             });
             for(let j=0;j<this.players[i].bullets.length;j++){
                 toSend.bulletLocations.push({
                     x:this.players[i].bullets[j].getX(),
-                    y:this.players[i].bullets[j].getY()
+                    y:this.players[i].bullets[j].getY(),
+                    r:this.players[i].bullets[j].r,
                 });
             }
         }
@@ -123,10 +124,18 @@ class Game{
     onmessage(index,message){
         let p=JSON.parse(message.data);
         if(p.type=="keyPressed"){
+            let player=this.players[index];
             if(p.key=="w")this.players[index].keyUp=true;
             if(p.key=="s")this.players[index].keyDown=true;
             if(p.key=="a")this.players[index].keyLeft=true;
             if(p.key=="d")this.players[index].keyRight=true;
+            if(p.key=="q"){
+                player.weaponIndex--;
+                if(player.weaponIndex<0){
+                    player.weaponIndex=player.weapons.length-1;
+                }
+            }
+            if(p.key=="e")(player.weaponIndex=(player.weaponIndex+1)%player.weapons.length);
         }
         if(p.type=="keyReleased"){
             if(p.key=="w")this.players[index].keyUp=false;
@@ -153,14 +162,11 @@ class Game{
 
     loadLevel(fileName){
         const fs = require('fs')
-        // for(let i=0;i<this.currentLevel.walls.length;i++){
-
-        // }
+        
         try {
             const data = fs.readFileSync(fileName, 'utf8')
             let level=JSON.parse(data);
             this.currentLevel=level;
-        //   console.log(this.currentLevel);
             for(let i=0;i<level.walls.length;i++){
                 level.walls[i]=new Wall(level.walls[i],this.world);
             }

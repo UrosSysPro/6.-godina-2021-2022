@@ -14,8 +14,6 @@ class Game{
         this.mx=w/2;
         this.my=h/2;
 
-        this.lookingAt=0;
-
         this.canvas=canvas;
         this.context=canvas.getContext("2d");
         

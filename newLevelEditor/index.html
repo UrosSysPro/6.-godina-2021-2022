@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="main()">
+    <div id="sidePanel">
+        <div class="row">
+            <div class="column">
+                <input type="number">
+                <input type="range">
+            </div>
+            <div class="column">
+                <input type="number">
+                <input type="range">
+            </div>
+        </div>
+        <div class="row">
+            <div class="column">
+                <input type="number">
+                <input type="range">
+            </div>
+            <div class="column">
+                <input type="number">
+                <input type="range">
+            </div>
+        </div>
+
+        <button onclick="addItem(event)">Add Item</button>
+        <button onclick="save(event)">Save to json</button>
+    </div>
+    <div id="editor"></div>
+
+    <script src="Item.js"></script>
+    <script src="Map.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

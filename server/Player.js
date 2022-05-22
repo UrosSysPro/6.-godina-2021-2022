@@ -1,5 +1,6 @@
 let Block=require("./Block").Block;
 let Bullet=require("./Bullet").Bullet;
+let Weapon=require("./Weapon").Weapon;
 
 class Player extends Block{
     constructor(x,y,w,h,world,ws){
@@ -18,7 +19,13 @@ class Player extends Block{
         this.health=100;
         this.isAlive=true;
 
-        this.fireCooldown=100;
+
+        this.weapons=[
+            new Weapon(9,10,10,100),
+            new Weapon(9,30,5,300),
+        ];
+        this.weaponIndex=0;
+        // this.fireCooldown=100;
         this.maxBullets=10000;
         this.lastTimeFired=0;
         this.firing=false;
@@ -66,19 +73,25 @@ class Player extends Block{
             }
             i++;
         }
-
-        if(this.firing&&(time-this.lastTimeFired>this.fireCooldown)){
+        let weapon=this.weapons[this.weaponIndex];
+        if(this.firing&&(time-this.lastTimeFired>weapon.cooldown)){
             this.lastTimeFired=time;
-            let r=3;
 
-            let vx=Math.cos(this.lookingAt)*15;
-            let vy=Math.sin(this.lookingAt)*15;
+            let r=weapon.bulletRadius;
+
+            let bulletSpeed=weapon.speed;
+            let vx=Math.cos(this.lookingAt)*bulletSpeed;
+            let vy=Math.sin(this.lookingAt)*bulletSpeed;
             // let vx=Math.cos(this.lookingAt)*1;
             // let vy=Math.sin(this.lookingAt)*1;
            
-            let x=this.getX()+2*vx;
-            let y=this.getY()+2*vy;
-            let damage=10;
+            
+            // let x=this.getX()+weapon.bulletRadius;
+            // let y=this.getY()+weapon.bulletRadius;
+
+            let x=this.getX()+Math.cos(this.lookingAt)*(Math.sqrt(2)*weapon.bulletRadius+20);
+            let y=this.getY()+Math.sin(this.lookingAt)*(Math.sqrt(2)*weapon.bulletRadius+20);
+            let damage=weapon.damage;
             let owner=this;
 
             this.bullets.push(new Bullet(x,y,r,vx,vy,damage,owner,world));

@@ -31,6 +31,7 @@ class Bullet{
         this.body=world.CreateBody(bodyDef);
         this.fixture=this.body.CreateFixture(fixDef);
         this.fixture.SetUserData(this);
+        this.fixture.SetSensor(true);
     }
 
     getX(){

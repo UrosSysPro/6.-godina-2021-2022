@@ -76,14 +76,24 @@ function wheel(e){
 
 
 function startGame(e){
-    hideMenu();
-    main();
-}
-function hideMenu(){
     let pages=document.getElementsByClassName("pages")[0];
     pages.style.display="none";
+    let playAgain=document.getElementById("playAgain");
+    playAgain.style.display="none";
+    main();
 }
+// function hideMenu(){
+//     let pages=document.getElementsByClassName("pages")[0];
+//     pages.style.display="none";
+// }
 function showMenu(){
-    let pages=document.getElementsByClassName("pages")[0];
-    pages.style.display="block";
+    let playAgain=document.getElementById("playAgain");
+    playAgain.style.display="flex";
+}
+
+function lvlSelect() {
+    console.log("level select");
+    let selectDiv=document.getElementById('lvlSelect');
+    console.log(selectDiv);
+    selectDiv.classList.toggle('invisible');
 }

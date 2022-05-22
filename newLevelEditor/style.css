@@ -1,0 +1,48 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+}
+#sidePanel{
+    width: 300px;
+    background-color: tomato;
+    overflow: hidden;
+}
+#editor{
+    flex: 1;
+    background-color: rgb(255, 160, 71);
+    overflow: hidden;
+    position: relative;
+}
+
+.map{
+    position: absolute;
+    background: white;
+}
+.item{
+    position: absolute;
+    border: 3px solid tomato;
+}
+.selectedItem{
+    border: 3px solid palegreen;
+}
+
+
+.row{
+    display: flex;
+}
+.column{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+input{
+    display: flex;
+    width: 100%;
+}

@@ -8,7 +8,7 @@ class Game{
             x:w/2,
             y:h/2,
             a:0,
-            scale:0.6
+            scale:2.3
         };
 
         this.mx=w/2;
@@ -29,17 +29,28 @@ class Game{
         this.walls=[];
 
         let img=new Image();
-        img.src="unnamed.png";
+        img.src="character.png";
         this.spriteInfo={
-            pad:4,
-            sw:32,
-            sh:32,
-            numberX:4,
-            numberY:4
+            pad:0,
+            sw:8,
+            sh:8,
+            numberX:1,
+            numberY:1,
+            selectedSpriteX:0,
+            selectedSpriteY:0,
+            lastFrameChange:0
         }
         // console.log(img);
         this.skins=[img];
         
+       
+        this.guns=[];
+        img=new Image();
+        img.src="gun1.png";
+        this.guns.push(img);
+        img=new Image();
+        img.src="gun2.png";
+        this.guns.push(img);
     }
     updateCamera(){
         if(this.myId==-1)return;
@@ -61,7 +72,25 @@ class Game{
         // this.camera.y/=this.camera.scale;
 
     }
+    updateSprite(){
+        let currTime=Date.now();
+        let lookingAt=this.players[this.myId].lookingAt;
+        if(currTime-this.spriteInfo.lastFrameChange>500){
+            this.spriteInfo.selectedSpriteX++;
+            this.spriteInfo.selectedSpriteX%=this.spriteInfo.numberX;
+        }
+        // if(lookingAt>-Math.PI/4&&lookingAt<Math.PI/4)
+        //     //gleda desno
+        // if(lookingAt>Math.PI/4&&lookingAt<3*Math.PI/4)
+        //     //gleda gore;
+        // if(lookingAt>Math.PI*3/4||lookingAt<-Math.PI*3/4)
+        //     //gleda desno
+        // if(lookingAt<-Math.PI/4&&lookingAt>-3*Math.PI/4)
+        //     //gleda gore;
+        
+    }
     draw(){
+        this.updateSprite();
         this.updateCamera()
 
         this.context.clearRect(0,0,this.w,this.h);
@@ -75,9 +104,10 @@ class Game{
         this.context.rotate(this.camera.a);
         this.context.translate(-width/2,-height/2);
 
-        this.drawWalls();
+        
         this.drawPlayers();
         this.drawBullets();
+        this.drawWalls();
         
         
         this.context.translate(width/2,height/2);
@@ -114,14 +144,34 @@ class Game{
             let sy=0;
             let sw=this.spriteInfo.sw;
             let sh=this.spriteInfo.sh;
-            this.context.drawImage(this.skins[skinId],sx,sy,sw,sh,-w,-h,w*2,h*2);
-            // this.context.fillRect(-w,-h,w*2,h*2);
+            if(!(lookingAt>Math.PI/2||lookingAt<-Math.PI/2)){
+                this.context.scale(-1,1);
+                this.context.drawImage(this.skins[skinId],sx,sy,sw,sh,-w,-h,w*2,h*2);
+                this.context.scale(-1,1);
+            }else{
+                this.context.drawImage(this.skins[skinId],sx,sy,sw,sh,-w,-h,w*2,h*2);
+            }
+            
             
             this.context.fillStyle="#Af207A";
 
             this.context.rotate(lookingAt);
             //ovde se crta puska
-            this.context.fillRect(0,-2.5,w*2,5);
+            let weaponId=this.players[i].weaponId;
+            this.context.translate(w*2+20,2.5);
+            if((lookingAt>Math.PI/2||lookingAt<-Math.PI/2)){
+                this.context.scale(-1,-1);
+                this.context.drawImage(this.guns[weaponId],0,0,8,4,10,-2.5,w*2,5);
+                this.context.scale(-1,-1);
+            }else{
+                this.context.scale(-1,1);
+                this.context.drawImage(this.guns[weaponId],0,0,8,4,10,-2.5,w*2,5);
+                this.context.scale(-1,1);
+            }
+            this.context.translate(-w*2-20,-2.5);
+                // this.context.fillRect(20,-2.5,w*2,5);
+            
+            
             this.context.rotate(-lookingAt);
 
 
@@ -139,13 +189,14 @@ class Game{
         for(let i=0;i<this.bullets.length;i++){
             let x=this.bullets[i].x;
             let y=this.bullets[i].y;
+            let r=this.bullets[i].r;
 
             this.context.fillStyle="#000";
 
             this.context.translate(x,y);
             this.context.beginPath();
             this.context.fillStyle="#000";
-            this.context.arc(0,0,2,0,Math.PI*2);
+            this.context.arc(0,0,r,0,Math.PI*2);
             this.context.closePath();
             this.context.fill();
             this.context.translate(-x,-y);
@@ -163,7 +214,9 @@ class Game{
             this.context.translate(x,y);
 
             this.context.fillRect(-w,-h,w*2,h*2);
-            
+            this.context.fillStyle="#515151";
+            this.context.fillRect(-w-5,-h-5,w*2,h*2);
+
             this.context.translate(-x,-y);
         }
     }
@@ -209,6 +262,9 @@ class Game{
         }
         if(message.type=="killed"){
             showMenu();
+        }
+        if(message.type=="weaponChanged"){
+            this.players[message.id].weaponId=message.weaponId;
         }
     }
 
